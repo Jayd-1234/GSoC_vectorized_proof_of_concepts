@@ -84,4 +84,4 @@ __global__ void comb_events(int* left,int* right,int* start1,int* start2,int* le
 ```
 
 
-Simple, right?
+Simple, right :smile: ?
