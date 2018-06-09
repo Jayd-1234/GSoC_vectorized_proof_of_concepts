@@ -32,7 +32,7 @@ It turns out that we dont need to explicitly increment pairs_i everytime. A uniq
 
 
 - `pairs_lengths[i]`, which serves as the start index for a particular event i.
-- `lengths1[i]`, which will give us the length of 1st array for event i.
+- `lengths2[i]`, which will give us the length of 2nd array for event i.
 - `j` and `k`.
 
 The unique index is thus `pairs_i = pairs_lengths[i] + j*lengths1[i] + k`. Note that this index will be unique no matter whatever way the threads are accessed. 
