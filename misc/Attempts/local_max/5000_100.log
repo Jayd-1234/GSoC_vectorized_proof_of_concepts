@@ -1,0 +1,26 @@
+==7438== NVPROF is profiling process 7438, command: python max_heele_steele.py
+==7438== Profiling application: python max_heele_steele.py
+==7438== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   49.23%  4.7843ms         4  1.1961ms  1.4110us  2.3852ms  [CUDA memcpy HtoD]
+                   30.74%  2.9870ms         1  2.9870ms  2.9870ms  2.9870ms  [CUDA memcpy DtoH]
+                   20.04%  1.9472ms         1  1.9472ms  1.9472ms  1.9472ms  heele_max2
+      API calls:   60.67%  101.41ms         1  101.41ms  101.41ms  101.41ms  cuCtxCreate
+                   31.75%  53.061ms         1  53.061ms  53.061ms  53.061ms  cuCtxDetach
+                    3.14%  5.2531ms         1  5.2531ms  5.2531ms  5.2531ms  cuMemcpyDtoH
+                    1.77%  2.9575ms         4  739.37us  20.706us  1.4661ms  cuMemcpyHtoD
+                    1.53%  2.5495ms         4  637.37us  200.97us  1.0396ms  cuMemAlloc
+                    0.69%  1.1506ms         4  287.64us  148.87us  426.82us  cuMemFree
+                    0.19%  325.83us         1  325.83us  325.83us  325.83us  cuModuleLoadDataEx
+                    0.07%  119.27us         1  119.27us  119.27us  119.27us  cuModuleUnload
+                    0.06%  97.441us        18  5.4130us  4.4660us  18.038us  cuDeviceGetAttribute
+                    0.03%  45.005us        10  4.5000us  4.4660us  4.5100us  cuDeviceComputeCapability
+                    0.02%  28.596us         1  28.596us  28.596us  28.596us  cuLaunchKernel
+                    0.02%  28.137us         6  4.6890us  4.5080us  5.5940us  cuCtxPopCurrent
+                    0.02%  28.013us         6  4.6680us  4.4670us  5.5110us  cuCtxPushCurrent
+                    0.02%  27.973us         6  4.6620us  4.5080us  5.4280us  cuCtxGetDevice
+                    0.01%  22.881us         3  7.6270us  4.5090us  13.487us  cuDeviceGetCount
+                    0.01%  13.528us         1  13.528us  13.528us  13.528us  cuDeviceGetPCIBusId
+                    0.01%  9.4370us         2  4.7180us  4.6770us  4.7600us  cuDeviceGet
+                    0.01%  9.0180us         2  4.5090us  4.5090us  4.5090us  cuModuleGetFunction
+                    0.00%  4.5090us         1  4.5090us  4.5090us  4.5090us  cuFuncSetBlockShape
