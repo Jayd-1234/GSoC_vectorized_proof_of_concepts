@@ -75,9 +75,9 @@ for idx in range(len(arr1) * len(arr2)):
     second[idx] = idx%counts2
 ```
 
-Note that the time complexity is still **O**(__m__*__n__), where m is the number of elements in `arr1` and n is the number of elements in `arr2`. However, now, the code can be readily parallelized.
+Note that the time complexity is still **O**(*m* * *n*), where m is the number of elements in `arr1` and n is the number of elements in `arr2`. However, now, the code can be readily parallelized.
 
-Armed with this idea, we can now extend it to the more general case with sub-arrays. In fact, it turns out that this is also quite easy. We need two things for that:
+Armed with this idea, we can now extend it to the more general case with sub-arrays. In fact, it turns out that this is also quite easy. We need some things things for that:
 
 - The offset for the sub-array element index.
 - The number of elements in `arr2` at ith sub-array, denoted by `counts2[i]`.
