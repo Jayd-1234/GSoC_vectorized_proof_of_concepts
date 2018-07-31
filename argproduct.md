@@ -1,9 +1,3 @@
-# GSoC 2018 report
-
-This markdown file is meant to be an intermediate content for the more complete Google doc report.  
-
-<!--<p align='center'> <b>Argproduct </b> </p> -->
-
 ## Argproduct
 
 ### Introduction  
