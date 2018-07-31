@@ -2,7 +2,7 @@
 
 ### Introduction  
 
-To be done by Jim/David as per Jim's suggestion.
+TODO
 
 ### Sequential Implementation
 
@@ -156,4 +156,4 @@ Some timing results are shown in table below
 | `numpy` code | 5000 | 100 | 6s  |
 
 
-TODO: Prettify the table, or use some other method of displaying the results?
+TODO: Remove the table, and show timing graphs.
