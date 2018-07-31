@@ -2,9 +2,9 @@
 
 This markdown file is meant to be an intermediate content for the more complete Google doc report.  
 
-<!--<p align='center'> <b>Product </b> </p> -->
+<!--<p align='center'> <b>Argproduct </b> </p> -->
 
-## Product
+## Argproduct
 
 ### Introduction  
 
@@ -12,7 +12,7 @@ To be done by Jim/David as per Jim's suggestion.
 
 ### Sequential Implementation
 
-`Product()` creates the cartesian product of two arrays, by combining them element-wise, grouping every element in first array ( say `arr1`) with every other element in second array ( say `arr2`) . To emulate this grouping, the function return two arrays, `first` and `second`, which contains the indices for the elements from `arr1` that get paired with elements in `arr2`.
+`Argproduct()` creates the cartesian argproduct of two arrays, by combining them element-wise, grouping every element in first array ( say `arr1`) with every other element in second array ( say `arr2`) . To emulate this grouping, the function return two arrays, `first` and `second`, which contains the indices for the elements from `arr1` that get paired with elements in `arr2`.
 
 To explain how `first` and `second` dictate how the grouping work, let's consider the simpler case first, where there is a single __event__. Consider the simple arrays:
 
@@ -21,7 +21,7 @@ arr1 = [a,b,c]
 arr2 = [1,2]
 ```
 
-The product of these two arrays will have `len(arr1)*len(arr2)` elements, which will be the size of `first` and `second` arrays. Considering 0-indexing, the arrays `first` and `second` will be
+The argproduct of these two arrays will have `len(arr1)*len(arr2)` elements, which will be the size of `first` and `second` arrays. Considering 0-indexing, the arrays `first` and `second` will be
 
 ```python
 first = [0,0,1,1,2,2]
@@ -30,11 +30,11 @@ second = [0,1,0,1,0,1]
 
 This arrays serve two purposes:
 
-1. They can be used to emulate product on languages which do not support list of tuples out of the box.
+1. They can be used to emulate argproduct on languages which do not support list of tuples out of the box.
 
-2. They will allow vectorization of the `product()` function. This will be explained shortly.
+2. They will allow vectorization of the `argproduct()` function. This will be explained shortly.
 
-A sequential implementation of the `product()` can be implemented as a double-looped version (We will be using `python` for explaining the codes, but the general idea holds true for any language).
+A sequential implementation of the `argproduct()` can be implemented as a double-looped version (We will be using `python` for explaining the codes, but the general idea holds true for any language).
 
 ```python
 for i in range(len(arr1)):
@@ -43,7 +43,7 @@ for i in range(len(arr1)):
         second[i*len(arr2) + j] = j
 ```
 
-This serves a theoretical background for `product`. In real world use-case, we usually care about `product` between sub-arrays of arrays `arr1` and `arr2`. These sub-arrays have some property in common, like they may belong to a particular class or event. The sub-arrays tend to be very irregular in shape. In order to represent them the sub-arrays in the array, the individual sub-arrays are usually stacked in a contiguous fashion, with the start and stop indices of each sub-array are described by two arrays `start` and `stop`. 
+This serves a theoretical background for `argproduct`. In real world use-case, we usually care about `argproduct` between sub-arrays of arrays `arr1` and `arr2`. These sub-arrays have some property in common, like they may belong to a particular class or event. The sub-arrays tend to be very irregular in shape. In order to represent them the sub-arrays in the array, the individual sub-arrays are usually stacked in a contiguous fashion, with the start and stop indices of each sub-array are described by two arrays `start` and `stop`. 
 
 Let's denote the `starts` and `stops` arrays of `arr1` and `arr2` as `starts1`,`stops1` and `starts2`, `stops2` respectively. Now, we can modify the above sequential implementation to account for sub-arrays as follows:
 
@@ -75,7 +75,7 @@ for idx in range(len(arr1) * len(arr2)):
     second[idx] = idx%counts2
 ```
 
-Note that the time complexity is still **O**(*m* * *n*), where m is the number of elements in `arr1` and n is the number of elements in `arr2`. However, now, the code can be readily parallelized.
+Note that the time complexity is still __O__(*m* * *n*), where m is the number of elements in `arr1` and n is the number of elements in `arr2`. However, now, the code can be readily parallelized.
 
 Armed with this idea, we can now extend it to the more general case with sub-arrays. In fact, it turns out that this is also quite easy. We need some things things for that:
 
@@ -111,7 +111,7 @@ In the CUDA kernel, we can pass the arrays required for the computation, and ass
 A simple implementation in CUDA is shown below
 
 ```cpp
-__global__ void combinations(int* starts1,int* starts2,int* counts2,int* pairs_parents,int* pairs_indices,int* left,int* right,int* numpairs)
+__global__ void argproduct(int* starts1,int* starts2,int* counts2,int* pairs_parents,int* pairs_indices,int* left,int* right,int* numpairs)
 {
     unsigned int idx = threadIdx.x + blockIdx.x*blockDim.x;
     if (idx>numpairs[0])
@@ -132,15 +132,15 @@ The kernel was launched with a thread block size of 512 threads.
 
 #### CPU implementation
 
-The CPU implementation of the vectorized code was done as both a pure `numpy` implementation, as well as a C++ code. The C++ code was compiled with gcc, with all optimizations turned on.
+The CPU implementation of the vectorized code was done as both a pure `numpy` implementation, as well as a C++ code. The C++ code was compiled with gcc, with all optimizations turned on. The code can be found [here](https://github.com/Jayd-1234/GSoC_vectorized_proof_of_concepts/blob/master/misc/Attempts/combinations/cpp/argproduct.cpp). Note that you will need the *.txt* files in the same directory for the test data. The code has been compiled with 
 
-**__Numpy Implementation__** 
+``` bash
+g++ -O3 -march=native -o argproduct argproduct.cpp -fopenmp
+```
 
-TODO
+And can be run as `./argproduct` by putting the executable in same directory as the data files.
 
-**__CPU Implementation__**
 
-TODO
 
 ### Performance tests
 
