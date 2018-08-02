@@ -6,7 +6,7 @@ TODO
 
 ### Sequential Implementation
 
-`Argproduct()` creates the cartesian argproduct of two arrays, by combining them element-wise, grouping every element in first array ( say `arr1`) with every other element in second array ( say `arr2`) . To emulate this grouping, the function return two arrays, `first` and `second`, which contains the indices for the elements from `arr1` that get paired with elements in `arr2`.
+`Argproduct()` creates the cartesian product of two arrays, by combining them element-wise, grouping every element in first array ( say `arr1`) with every other element in second array ( say `arr2`) . To emulate this grouping, the function return two arrays, `first` and `second`, which contains the indices for the elements from `arr1` that get paired with elements in `arr2`.
 
 To explain how `first` and `second` dictate how the grouping work, let's consider the simpler case first, where there is a single __event__. Consider the simple arrays:
 
@@ -69,7 +69,7 @@ for idx in range(len(arr1) * len(arr2)):
     second[idx] = idx%counts2
 ```
 
-Note that the time complexity is still __O__(*m* * *n*), where m is the number of elements in `arr1` and n is the number of elements in `arr2`. However, now, the code can be readily parallelized.
+Note that the time complexity is still $\mathcal{O}(m*n)$ , where $m$ is the number of elements in `arr1` and $n$ is the number of elements in `arr2`. However, now, the code can be readily parallelized.
 
 Armed with this idea, we can now extend it to the more general case with sub-arrays. In fact, it turns out that this is also quite easy. We need some things things for that:
 
