@@ -65,4 +65,162 @@ Note that the dependence on `pairs_i`, which counts the current pair index, lead
 
 ### Vectorized implementation
 
+#### Mathematical basis
+
+The vectorized implementation is much involved in the case of `argpairs`. A key element to notice is that the `argpairs` generated pairs, which are not repeated. We can visualize this as generating the upper triangular matrix indices, from the linear indices of the array. We shall consider the case for single event first.
+
+To derive the necessary relationship, not that given the row index $i$ and column index $j$ of the upper triangular matrix, the linear index of the matrix is given by 
+
+$$ m = n*i - \frac{i(i+1)}{2} +j$$
+
+Where $n$ is the total number of elements in `arr1`, that is $n = \mathrm{counts}  = \mathrm{(stops-starts)}$.
+
+Now, rearranging the equation, we get 
+
+$$ j = m-n*i+\frac{i(i+1)}{2} $$.
+
+Since j (column index) must always be positive, so we are finding the minimum value of `i`, which gives positive `j` for every `m`.
+
+That is, row index, 
+
+$$ i = \min\{i :  m-n*i+\frac{i(i+1)}{2} \geq 0\}$$ 
+
+Which leads to the quadratic equation 
+
+$$ i^2 - (2n-1)i +m \geq 0   $$
+
+$$ \Rightarrow i \geq \frac{2n+1 - \sqrt{ (2n-1)(2n-1) -8m}}{2}  $$
+
+$$ \Rightarrow i = floor \{ \frac{2n+1 - \sqrt{ (2n-1)(2n-1) -8m}}{2} \} $$ 
+
+The j can easily be calculated from 
+
+$$j = m-n*i+\frac{i(i+1)}{2}$$
+
+#### Implementation
+
+##### Single event case
+
+The algorithm described above can easily be implemented, as shown:
+
+```python
+import numpy 
+
+counts = stops-starts
+numpairs = counts*(counts+1)/2
+
+# Swith to our notation
+
+n = counts
+
+for m in range(numpairs):
+    first[m] = numpy.floor((2*n+1 - numpy.sqrt((2*n+1)*(2*n+1) - 8*m)) /2)
+    second[m] = m - n*first[m] + first[m]*(first[m]+1)/2
+```
+
+Note that we are using $2n+1$ as the factor instead of $2n-1$. This has to do with the fact that the the usage of latter sometimes gives imaginary roots. 
+
+##### Multiple events case
+
+Now, let's consider the harder part, where the linear data array is divided into segments.
+
+We can simulate the same pairing logic here too. We just have to offset each pair to the start of the array segment, given by `starts` array. 
+
+Also, we need the help of 
+- `pairs_parents`, which relates every pair element to the event index in which the parent is in.The process of generation of `pairs_parents` is similar to [parents]() function.
+
+    TODO: link to parents after it's done.
+
+- `pairs_indices`, which gives the index of the first pair in the event.
+
+- `pairs_contents` which gives the running index of all possible pairs.
+
+The implementation is 
+
+```python
+import numpy
+
+# Calculate counts
+counts = stops-starts
+
+# Find pairs_indices
+pairs_indices = np.zeros(len(starts)+1)
+pairs_indices[1:] = np.cumsum(counts*(counts+1)/2, dtype=numpy.int)
+
+# Define pairs_contents
+pairs_contents = np.arange(pairs_indices[-1])
+
+# Find pair_parents
+pairs_parents = parents(pairs_indices, pairs_contents)
+
+# Initialize the first and second arrays
+first = np.ones_like(pairs_contents)*-1
+second = np.empty_like(pairs_contents)
+
+# Calculate the values
+n = counts[pairs_parents[pairs_contents]]
+k = pairs_contents-pairs_indices[pairs_parents[pairs_contents]]
+
+# Add offset to the pairs_indices
+first[pairs_contents] = starts[pairs_parents[pairs_contents]]+ np.floor((2*n+1 - np.sqrt((2*n-+1)*(2*n+1) - 8*k))/2)
+i = first[pairs_contents] - starts[pairs_parents[pairs_contents]]
+second[pairs_contents] = starts[pairs_parents[pairs_contents]] + k - n*i + i*(i+1)/2
+```
+
+#### GPU Implementation
+
+The GPU implementation follows the similar implementation procedure.  We used CUDA for the implementation.
+
+The implementation is straightforward:
+
+```cpp
+__global__ void argpairs(int* first,int* second,int* starts,int* counts,int* pairs_indices,int* pairs_parents, int* numpairs)
+{
+    unsigned int tid = threadIdx.x + blockIdx.x*blockDim.x;
+
+    // Restrict threads to legal pairs
+    if (tid > numpairs[0])
+        return;
+
+    int n = counts[pairs_parents[tid]];
+    int x = pairs_parents[tid];
+    int k = idx - pairs_indices[x];
+
+    // Check for events with no elements
+    if (n <= 0)
+        return;
+
+    // Calculate 
+    int i = int(floor((2*n+1 - sqrt((2*n+1)*(2*n+1) -8*k))/2));
+    first[tid] = starts[x] + i;
+    second[tid] = starts[x] + k -n*i + i*(i+1)/2 ;
+
+}
+```
+
+#### CPU implementation
+
+The CPU implementation was done in C++, and is available [here]()
+
+TODO: Add link to cpp code
+
+It was compiled with
+
+```bash
+g++ -O3 -march=native -o argpairs -fopenmp argpairs_cpp.cpp 
+```
+
+### Performance 
+
+#### Execution environment
+
+TODO: Add bout AWS instance
+
+#### Timings
+
+TODO: Add graph after timings are done
+
+
+
+
 
